@@ -193,8 +193,8 @@
                             android:layout_width="1dp"
                             android:layout_height="26dp"
                             android:layout_gravity="bottom"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
                             android:layout_marginBottom="8dp"
                             android:background="#33FFFFFF" />
 
@@ -223,10 +223,10 @@
                                 android:format12Hour="EEEE  d MMMM"
                                 android:format24Hour="EEEE  d MMMM"
                                 android:textColor="#A6FFFFFF"
-                                android:textSize="14sp"
+                                android:textSize="13sp"
                                 android:fontFamily="@font/outfit"
                                 android:fontVariationSettings="'wght' 400"
-                                android:letterSpacing="0.14"
+                                android:letterSpacing="0.08"
                                 android:textAllCaps="true" />
                         </LinearLayout>
                     </LinearLayout>

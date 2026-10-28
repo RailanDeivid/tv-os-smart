@@ -29,14 +29,17 @@ import java.util.TimeZone;
 /**
  * "Next match" block under the date: one club's next fixture from football-data.org, in Brasilia
  * time. The last answer is cached, so it still shows when the network is down; it is re-fetched
- * at most every few hours (and every minute while there is nothing usable to show).
+ * at most every few hours (and every minute while there is nothing usable to show, or while a
+ * match is on). A match in play or just over shows its score; the free plan's scores are delayed.
  */
 final class NextMatch {
     private static final String API = "https://api.football-data.org/v4/";
     private static final int SHOWN = 2;   // next matches per club, any competition
     private static final long STALE_MS = 3L * 60 * 60 * 1000;
     private static final long RETRY_MS = 5L * 60 * 1000;   // after a failed call, wait before asking again
-    private static final long KEEP_AFTER_KICKOFF_MS = 2L * 60 * 60 * 1000;
+    private static final long KEEP_AFTER_KICKOFF_MS = 3L * 60 * 60 * 1000;   // the match, then its final score for about an hour
+    private static final long LIVE_POLL_MS = 60L * 1000;   // while a match is on (free plan: 10 calls a minute)
+    private static final long LIVE_LEAD_MS = 5L * 60 * 1000;   // start polling this long before kick-off
 
     /** The API rejects some calls that arrive at the same moment, so all clubs ask one after another. */
     private static final Object API_LOCK = new Object();
@@ -70,8 +73,42 @@ final class NextMatch {
         render();
         long now = System.currentTimeMillis();
         // Also due when a match has just dropped off and fewer than SHOWN are left to show.
-        boolean due = now - prefs.getLong(key + "_at", 0) > STALE_MS || cachedMatches().size() < SHOWN;
-        if (due && now - prefs.getLong(key + "_try", 0) > RETRY_MS) fetch();
+        boolean live = liveWindow();
+        boolean due = now - prefs.getLong(key + "_at", 0) > (live ? LIVE_POLL_MS : STALE_MS) || cachedMatches().size() < SHOWN;
+        if (due && now - prefs.getLong(key + "_try", 0) > (live ? LIVE_POLL_MS : RETRY_MS)) fetch();
+    }
+
+    /** From just before kick-off until the cached answer says the match is over: ask often, to keep the score fresh. */
+    private boolean liveWindow() {
+        long now = System.currentTimeMillis();
+        for (JSONObject m : cachedMatches()) {
+            if (!"FINISHED".equals(m.optString("status")) && m.optLong("utc") - LIVE_LEAD_MS <= now) return true;
+        }
+        return false;
+    }
+
+    static boolean isLive(JSONObject m) {
+        String s = m.optString("status");
+        return s.equals("IN_PLAY") || s.equals("PAUSED");
+    }
+
+    /** True when there is a score worth showing: the match is on or has just finished. */
+    static boolean hasScore(JSONObject m) {
+        return m.has("ourGoals") && (isLive(m) || "FINISHED".equals(m.optString("status")));
+    }
+
+    /** "1 x 0", from our club's side. */
+    static String scoreText(JSONObject m) {
+        return m.optInt("ourGoals") + " x " + m.optInt("oppGoals");
+    }
+
+    /** "AO VIVO · 67'" (the minute only when the API sends it), "INTERVALO" or "ENCERRADO". */
+    static String phase(JSONObject m) {
+        String s = m.optString("status");
+        if (s.equals("PAUSED")) return "INTERVALO";
+        if (s.equals("FINISHED")) return "ENCERRADO";
+        int minute = m.optInt("minute", 0);
+        return minute > 0 ? "AO VIVO · " + minute + "'" : "AO VIVO";
     }
 
     /** Cached next matches, soonest first, minus anything already over. */
@@ -143,7 +180,9 @@ final class NextMatch {
             row.setGravity(Gravity.CENTER_VERTICAL);
             addCrest(row, m.optString("ourCrest"), 0);
             addText(row, clubName(context, m, true, displayName), 15, 0xFFFFFFFF, face, 8);
-            addText(row, "vs", 13, 0x8CFFFFFF, face, 12);
+            boolean scored = hasScore(m);
+            if (scored) addText(row, scoreText(m), 20, 0xFFFFFFFF, face, 12);
+            else addText(row, "vs", 13, 0x8CFFFFFF, face, 12);
             addCrest(row, m.optString("oppCrest"), 12);
             addText(row, clubName(context, m, false, m.optString("opp")), 15, 0xFFFFFFFF, face, 8);
             LinearLayout.LayoutParams rowLp = new LinearLayout.LayoutParams(
@@ -154,8 +193,8 @@ final class NextMatch {
 
             Log.i("NextMatch", "show " + key + ": utc=" + utcIso(m.optLong("utc")) + " -> " + when + " | "
                     + displayName + " x " + m.optString("opp") + " | " + m.optString("comp") + (tbd ? " | time TBD" : ""));
-            addLine(when + (tbd ? " · horário a definir" : " (Brasília)") + " · " + competitionLabel(m.optString("comp")),
-                    13, 0xA6FFFFFF, face, 3);
+            addLine((scored ? phase(m) : when + (tbd ? " · horário a definir" : " (Brasília)")) + " · " + competitionLabel(m.optString("comp")),
+                    13, scored && isLive(m) ? 0xFF7CE38B : 0xA6FFFFFF, face, 3);
         }
         block.setVisibility(View.VISIBLE);
     }
@@ -284,7 +323,8 @@ final class NextMatch {
             JSONObject m = matches.getJSONObject(i);
             long t = iso.parse(m.getString("utcDate")).getTime();
             String status = m.optString("status");
-            boolean open = !(status.equals("FINISHED") || status.equals("AWARDED") || status.equals("POSTPONED")
+            // FINISHED stays (until KEEP_AFTER_KICKOFF_MS) so the final score shows for a while
+            boolean open = !(status.equals("AWARDED") || status.equals("POSTPONED")
                     || status.equals("CANCELLED") || status.equals("SUSPENDED"));
             if (!open || t <= now - KEEP_AFTER_KICKOFF_MS) continue;
             JSONObject home = m.getJSONObject("homeTeam");
@@ -304,7 +344,16 @@ final class NextMatch {
                     .put("utc", t)
                     .put("opp", opponent)
                     .put("comp", m.getJSONObject("competition").optString("name", ""))
-                    .put("tbd", "SCHEDULED".equals(status));
+                    .put("tbd", "SCHEDULED".equals(status))
+                    .put("status", status);
+            // The current score (full time once it is over); null before kick-off. The minute only comes on some plans.
+            JSONObject score = m.optJSONObject("score");
+            JSONObject goals = score != null ? score.optJSONObject("fullTime") : null;
+            if (goals != null && !goals.isNull("home") && !goals.isNull("away")) {
+                boolean ourHome = home.optInt("id") == teamId;
+                entry.put("ourGoals", goals.optInt(ourHome ? "home" : "away")).put("oppGoals", goals.optInt(ourHome ? "away" : "home"));
+            }
+            if (m.has("minute") && !m.isNull("minute")) entry.put("minute", m.optInt("minute"));
             upcoming.add(entry);
         }
         Collections.sort(upcoming, (x, y) -> Long.compare(x.optLong("utc"), y.optLong("utc")));

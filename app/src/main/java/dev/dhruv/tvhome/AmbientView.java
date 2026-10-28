@@ -285,7 +285,9 @@ final class AmbientView extends FrameLayout {
         row.setGravity(Gravity.CENTER_VERTICAL);
         addCrest(row, m.optString("ourCrest"), 0);
         addInline(row, NextMatch.clubName(getContext(), m, true, ourName), 20, 0xFFFFFFFF, 10);
-        addInline(row, "vs", 15, 0x99FFFFFF, 12);
+        boolean scored = NextMatch.hasScore(m);
+        if (scored) addInline(row, NextMatch.scoreText(m), 24, 0xFFFFFFFF, 12);
+        else addInline(row, "vs", 15, 0x99FFFFFF, 12);
         addCrest(row, m.optString("oppCrest"), 12);
         addInline(row, NextMatch.clubName(getContext(), m, false, m.optString("opp")), 20, 0xFFFFFFFF, 10);
         LinearLayout.LayoutParams lp = wrap();
@@ -296,8 +298,9 @@ final class AmbientView extends FrameLayout {
         SimpleDateFormat fmt = new SimpleDateFormat(tbd ? "EEE, d MMM" : "EEE, d MMM · HH:mm", new Locale("pt", "BR"));
         fmt.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         String when = fmt.format(new Date(m.optLong("utc")));
-        TextView info = text(when + (tbd ? " · horário a definir" : " (Brasília)") + " · " + NextMatch.labelFor(m.optString("comp")),
-                14, 0xB3FFFFFF);
+        TextView info = text((scored ? NextMatch.phase(m) : when + (tbd ? " · horário a definir" : " (Brasília)"))
+                + " · " + NextMatch.labelFor(m.optString("comp")),
+                14, scored && NextMatch.isLive(m) ? 0xFF7CE38B : 0xB3FFFFFF);
         LinearLayout.LayoutParams ip = wrap();
         ip.topMargin = dp(3);
         ip.setMarginStart(dp(2));
