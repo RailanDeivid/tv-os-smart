@@ -42,7 +42,7 @@ final class NextMatch {
     private static final long LIVE_LEAD_MS = 5L * 60 * 1000;   // start polling this long before kick-off
 
     /** The API rejects some calls that arrive at the same moment, so all clubs ask one after another. */
-    private static final Object API_LOCK = new Object();
+    static final Object API_LOCK = new Object();
 
     private final Context context;
     private final SharedPreferences prefs;
@@ -271,8 +271,12 @@ final class NextMatch {
         }, "next-match-" + key).start();
     }
 
-    /** GET with the API token; null (and a log line) on any non-200 answer. */
     private String get(String url, String token) throws Exception {
+        return fetchJson(url, token, key);
+    }
+
+    /** GET with the API token; null (and a log line tagged with `who`) on any non-200 answer. */
+    static String fetchJson(String url, String token, String who) throws Exception {
         for (int attempt = 1; attempt <= 5; attempt++) {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             try {
@@ -288,7 +292,7 @@ final class NextMatch {
                     }
                     return body.toString();
                 }
-                Log.w("NextMatch", key + " HTTP " + code + " (attempt " + attempt + ")");
+                Log.w("NextMatch", who + " HTTP " + code + " (attempt " + attempt + ")");
                 if (code != 400) return null;
             } finally {
                 conn.disconnect();

@@ -24,6 +24,36 @@ public class KeyWatcherService extends AccessibilityService {
     private static final String TAG = "KeyWatch";
     private static final String LONG = "long:";
 
+    private GoalAlerts goalAlerts;
+
+    /** Goal cards over any app live here too, because this is the part of the app that stays alive behind other apps. */
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        if (goalAlerts != null) goalAlerts.stop();
+        if ("off".equalsIgnoreCase(getString(R.string.goal_alerts).trim())) return;
+        goalAlerts = new GoalAlerts(this);
+        goalAlerts.start();
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        stopGoalAlerts();
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        stopGoalAlerts();
+        super.onDestroy();
+    }
+
+    private void stopGoalAlerts() {
+        if (goalAlerts == null) return;
+        goalAlerts.stop();
+        goalAlerts = null;
+    }
+
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
         String cameras = getString(R.string.key_cameras).trim();

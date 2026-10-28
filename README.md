@@ -79,6 +79,7 @@ cp personal.example.properties personal.properties
 | `football_api_key` | Token grátis do [football-data.org](https://www.football-data.org/client/register) | `abc123...` |
 | `teams` | Até dois times: `chave\|nome\|id do time\|competições`, separados por `;` | `rm\|Real Madrid\|86\|PD,CL` |
 | `team_names` | Como escrever os clubes: `short` (padrão: Barça, Racing), `full` (nome completo) ou `tla` (sigla de 3 letras) | `short` |
+| `goal_alerts` | Aviso de gol por cima de qualquer app, dos dois lados, com um som suave: `on` (padrão) ou `off`. Precisa do serviço de acessibilidade ligado (veja [Atalhos](#atalhos-do-controle-qualquer-app)). O plano grátis do football-data.org entrega o placar com atraso | `on` |
 | `weather_lat`, `weather_lon`, `weather_city` | Local da previsão. A cidade só aparece no título se você preencher | `-23.55`, `-46.63`, `São Paulo` |
 | `ambient_minutes` | Minutos parado até o modo ambiente. `0` desliga, vazio = 5 | `5` |
 | `hidden_apps` | Pacotes que ficam fora da barra de apps, separados por vírgula | `com.exemplo.app` |

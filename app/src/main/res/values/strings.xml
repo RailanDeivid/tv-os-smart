@@ -13,7 +13,7 @@
     <string name="cam_save">Save</string>
     <string name="cam_connecting">Connecting…</string>
     <string name="cam_error">Could not open the camera. Check the user, password and address. Menu edits the account.</string>
-    <string name="key_watcher_description">Lets the launcher react to two remote buttons in any app: one opens the cameras, one returns to the home screen. It ignores every other key.</string>
+    <string name="key_watcher_description">Lets the launcher react to two remote buttons in any app: one opens the cameras, one returns to the home screen. It ignores every other key. It also shows a short goal alert for your clubs over the open app. It does not read the screen.</string>
     <string name="cameras">Cameras</string>
     <string name="cameras_missing">Cameras app (Yoosee) is not installed</string>
     <string name="inputs">Inputs</string>

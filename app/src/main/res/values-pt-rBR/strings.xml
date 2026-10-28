@@ -13,7 +13,7 @@
     <string name="cam_save">Salvar</string>
     <string name="cam_connecting">Conectando…</string>
     <string name="cam_error">Não foi possível abrir a câmera. Confira o usuário, a senha e o endereço. Menu edita a conta.</string>
-    <string name="key_watcher_description">Deixa o launcher reagir a dois botões do controle em qualquer app: um abre as câmeras e outro volta para a tela inicial. Ignora todas as outras teclas.</string>
+    <string name="key_watcher_description">Deixa o launcher reagir a dois botões do controle em qualquer app: um abre as câmeras e outro volta para a tela inicial. Ignora todas as outras teclas. Também mostra um aviso rápido de gol dos seus times por cima do app aberto. Não lê o conteúdo da tela.</string>
     <string name="cameras">Câmeras</string>
     <string name="cameras_missing">App de câmeras (Yoosee) não instalado</string>
     <string name="inputs">Entradas</string>

@@ -42,6 +42,7 @@ android {
         resValue("string", "weather_lon", personal("weather_lon"))
         resValue("string", "weather_city", personal("weather_city"))
         resValue("string", "team_names", personal("team_names").ifEmpty { "short" })
+        resValue("string", "goal_alerts", personal("goal_alerts").ifEmpty { "on" })
         resValue("string", "hidden_apps", personal("hidden_apps"))
         resValue("string", "key_cameras", personal("key_cameras"))
         resValue("string", "key_home", personal("key_home"))
