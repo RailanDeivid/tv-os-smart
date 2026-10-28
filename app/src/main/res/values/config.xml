@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher configuration. Package names: `adb shell pm list packages`.
+  The favourites order can also be changed on the TV (long-press OK on a tile).
+-->
+<resources>
+
+    <!-- Default favourites, in order. The first `columns` sit in the dock; missing apps are skipped. -->
+    <string-array name="default_favourites" translatable="false">
+        <item>com.graymatrix.did</item>
+        <item>com.google.android.youtube.tv</item>
+        <item>com.amazon.amazonvideo.livingroom</item>
+        <item>in.startv.hotstar</item>
+        <item>com.sonyliv</item>
+        <item>com.apple.atve.sony.appletv</item>
+        <item>com.crunchyroll.crunchyroid</item>
+        <item>com.mubi</item>
+        <item>com.mxtech.videoplayer.television</item>
+        <item>com.mxtech.videoplayer.ad</item>
+    </string-array>
+
+    <!-- The TV's Live TV / inputs app, offered at the end of the Inputs menu (Sony: com.sony.dtv.tvx). -->
+    <string name="live_tv_package" translatable="false">com.sony.dtv.tvx</string>
+
+    <!-- Tiles per row in the grid; the dock always has this many slots. -->
+    <integer name="columns">100</integer>
+</resources>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Blurred, darkened copy of the focused app's art (top shelf background). -->
+    <dev.dhruv.tvhome.CrossfadeView
+        android:id="@+id/heroBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0" />
+
+    <View
+        android:id="@+id/heroScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="@drawable/scrim" />
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Ambient glow in the colour of the focused dock app. -->
+        <View
+            android:id="@+id/ambient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0" />
+
+        <!-- Top shelf: the focused app's banner and name, positioned above the dock in code. -->
+        <LinearLayout
+            android:id="@+id/heroBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginEnd="68dp"
+            android:alpha="0"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <dev.dhruv.tvhome.CrossfadeView
+                android:id="@+id/heroArt"
+                android:layout_width="192dp"
+                android:layout_height="108dp"
+                android:layout_marginEnd="28dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/heroSubtitle"
+                    style="@style/Caption"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="6dp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/heroName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="48sp"
+                    android:fontFamily="@font/outfit"
+                    android:fontVariationSettings="'wght' 300"
+                    android:letterSpacing="-0.02"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Next matches: float under the date so they never change the layout below. Entries are added in code. -->
+        <LinearLayout
+            android:id="@+id/matchesRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="118dp"
+            android:layout_marginStart="60dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/nextGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="36dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Caption"
+                    android:text="@string/next_game" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nextGameSp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Caption"
+                    android:text="@string/next_game" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 10-day forecast: floats under the top buttons. Rows are added in code. -->
+        <LinearLayout
+            android:id="@+id/weatherBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="112dp"
+            android:layout_marginEnd="56dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Caption"
+                android:text="@string/weather_title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="56dp"
+            android:paddingEnd="56dp"
+            android:paddingTop="26dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/leftBlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/greeting"
+                        style="@style/Caption"
+                        android:layout_marginStart="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:baselineAligned="true">
+
+                        <TextClock
+                            android:id="@+id/clock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:format12Hour="h:mm"
+                            android:format24Hour="HH:mm"
+                            android:textColor="#FFFFFFFF"
+                            android:textSize="52sp"
+                            android:fontFamily="@font/outfit"
+                            android:fontVariationSettings="'wght' 300"
+                            android:letterSpacing="-0.04"
+                            android:includeFontPadding="false" />
+
+                        <TextClock
+                            android:id="@+id/ampm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="8dp"
+                            android:format12Hour="a"
+                            android:format24Hour=""
+                            android:textColor="#B3FFFFFF"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/outfit"
+                            android:fontVariationSettings="'wght' 500"
+                            android:letterSpacing="0.08"
+                            android:textAllCaps="true" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="#33FFFFFF" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="9dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/weatherNow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:textColor="#FFFFFFFF"
+                                android:textSize="15sp"
+                                android:fontFamily="@font/outfit"
+                                android:fontVariationSettings="'wght' 500"
+                                android:visibility="gone" />
+
+                            <TextClock
+                                android:id="@+id/date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:format12Hour="EEEE  d MMMM"
+                                android:format24Hour="EEEE  d MMMM"
+                                android:textColor="#A6FFFFFF"
+                                android:textSize="14sp"
+                                android:fontFamily="@font/outfit"
+                                android:fontVariationSettings="'wght' 400"
+                                android:letterSpacing="0.14"
+                                android:textAllCaps="true" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/topButtons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@id/leftBlock"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btnCameras"
+                        style="@style/TopButton"
+                        android:contentDescription="@string/cameras"
+                        android:drawableStart="@drawable/ic_camera"
+                        android:drawablePadding="0dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:nextFocusDown="@id/grid" />
+
+                    <TextView
+                        android:id="@+id/btnInputs"
+                        style="@style/TopButton"
+                        android:text="@string/inputs"
+                        android:drawableStart="@drawable/ic_hdmi"
+                        android:nextFocusDown="@id/grid" />
+
+                    <TextView
+                        android:id="@+id/btnWifi"
+                        style="@style/TopButton"
+                        android:text="@string/wifi"
+                        android:drawableStart="@drawable/ic_wifi"
+                        android:nextFocusDown="@id/grid" />
+
+                    <TextView
+                        android:id="@+id/btnSettings"
+                        style="@style/TopButton"
+                        android:text="@string/settings"
+                        android:drawableStart="@drawable/ic_settings"
+                        android:nextFocusDown="@id/grid" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- The wrapper clips at the grid's edge; the grid itself must not clip so scaled tiles can overflow their cells. -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="184dp"
+                    android:layout_gravity="bottom"
+                    android:paddingTop="10dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="64dp"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    android:descendantFocusability="afterDescendants" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Continue watching row, positioned above the dock in code. Hidden when there's nothing to resume. -->
+        <LinearLayout
+            android:id="@+id/watchBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:clipChildren="false">
+
+            <TextView
+                style="@style/Caption"
+                android:layout_marginStart="72dp"
+                android:text="@string/continue_watching" />
+
+            <HorizontalScrollView
+                android:id="@+id/watchScroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/watchRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="72dp"
+                    android:paddingEnd="72dp" />
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <!-- The single floating glass highlight that springs between tiles. -->
+        <dev.dhruv.tvhome.GlassView
+            android:id="@+id/glass"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:alpha="0"
+            android:importantForAccessibility="no" />
+
+    </FrameLayout>
+
+    <!-- Quick settings: dimmed scrim and a glass panel that slides in from the right. -->
+    <FrameLayout
+        android:id="@+id/qsOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/qsScrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#A6000000" />
+
+        <ScrollView
+            android:id="@+id/qsPanel"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_margin="28dp"
+            android:background="@drawable/glass_panel"
+            android:elevation="12dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/qsItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp" />
+        </ScrollView>
+    </FrameLayout>
+</FrameLayout>

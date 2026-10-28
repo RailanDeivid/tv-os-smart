@@ -1,0 +1,17 @@
+# build output
+.gradle/
+build/
+*.apk
+.idea/
+*.iml
+.DS_Store
+
+# machine-specific and personal: never commit
+local.properties
+personal.properties
+
+# signing keys (the committed debug.keystore is a throwaway key and is kept on purpose)
+*.jks
+*.keystore
+keystore.properties
+!debug.keystore
